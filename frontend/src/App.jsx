@@ -16,8 +16,8 @@ function AppContent() {
   const tabs = [
     { id: 'dashboard', label: 'Dashboard' },
     { id: 'customers', label: 'Customers' },
-    { id: 'loans', label: 'Loans' },
     { id: 'loantypes', label: 'Loan Types' },
+    { id: 'loans', label: 'Loans' },
     { id: 'guarantors', label: 'Guarantors' },
     { id: 'payments', label: 'Payments' }
   ]
@@ -28,10 +28,10 @@ function AppContent() {
         return <Dashboard />
       case 'customers':
         return <Customers />
-      case 'loans':
-        return <Loans />
       case 'loantypes':
         return <LoanTypes />
+      case 'loans':
+        return <Loans />
       case 'guarantors':
         return <Guarantors />
       case 'payments':
