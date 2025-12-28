@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { guarantorAPI } from '../services/api'
+import { useStatus } from '../context/StatusContext'
 import './TableComponent.css'
 
 function Guarantors() {
   const [guarantors, setGuarantors] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const { showError, showSuccess } = useStatus()
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [formData, setFormData] = useState({
@@ -26,8 +28,11 @@ function Guarantors() {
       const response = await guarantorAPI.getAll()
       setGuarantors(response.data)
       setError(null)
+      showSuccess(`Successfully loaded ${response.data.length} guarantors`, response.status)
     } catch (err) {
-      setError('Failed to fetch guarantors. Make sure the backend is running.')
+      const message = 'Failed to fetch guarantors. Make sure the backend is running.'
+      setError(message)
+      showError(message, err.statusCode || err.response?.status)
       console.error(err)
     } finally {
       setLoading(false)
@@ -43,17 +48,22 @@ function Guarantors() {
         creditScore: formData.creditScore ? parseFloat(formData.creditScore) : null,
       }
 
+      let response
       if (editingId) {
-        await guarantorAPI.update(editingId, data)
+        response = await guarantorAPI.update(editingId, data)
+        showSuccess('Guarantor updated successfully', response.status)
       } else {
-        await guarantorAPI.create(data)
+        response = await guarantorAPI.create(data)
+        showSuccess('Guarantor created successfully', response.status)
       }
 
       await fetchGuarantors()
       resetForm()
       setError(null)
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to save guarantor')
+      const message = err.response?.data?.message || 'Failed to save guarantor'
+      setError(message)
+      showError(message, err.statusCode || err.response?.status)
       console.error(err)
     } finally {
       setLoading(false)
@@ -77,11 +87,14 @@ function Guarantors() {
 
     try {
       setLoading(true)
-      await guarantorAPI.delete(id)
+      const response = await guarantorAPI.delete(id)
       await fetchGuarantors()
       setError(null)
+      showSuccess('Guarantor deleted successfully', response.status)
     } catch (err) {
-      setError('Failed to delete guarantor')
+      const message = err.response?.data?.message || 'Failed to delete guarantor'
+      setError(message)
+      showError(message, err.statusCode || err.response?.status)
       console.error(err)
     } finally {
       setLoading(false)

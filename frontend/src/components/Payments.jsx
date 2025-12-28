@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { paymentAPI, loanAPI } from '../services/api'
+import { useStatus } from '../context/StatusContext'
 import './TableComponent.css'
 
 function Payments() {
@@ -7,6 +8,7 @@ function Payments() {
   const [loans, setLoans] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const { showError, showSuccess } = useStatus()
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [formData, setFormData] = useState({
@@ -26,8 +28,11 @@ function Payments() {
       const response = await paymentAPI.getAll()
       setPayments(response.data)
       setError(null)
+      showSuccess(`Successfully loaded ${response.data.length} payments`, response.status)
     } catch (err) {
-      setError('Failed to fetch payments. Make sure the backend is running.')
+      const message = 'Failed to fetch payments. Make sure the backend is running.'
+      setError(message)
+      showError(message, err.statusCode || err.response?.status)
       console.error(err)
     } finally {
       setLoading(false)
@@ -53,17 +58,22 @@ function Payments() {
         loan: { loanId: parseInt(formData.loan.loanId) },
       }
 
+      let response
       if (editingId) {
-        await paymentAPI.update(editingId, data)
+        response = await paymentAPI.update(editingId, data)
+        showSuccess('Payment updated successfully', response.status)
       } else {
-        await paymentAPI.create(data)
+        response = await paymentAPI.create(data)
+        showSuccess('Payment created successfully', response.status)
       }
 
       await fetchPayments()
       resetForm()
       setError(null)
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to save payment')
+      const message = err.response?.data?.message || 'Failed to save payment'
+      setError(message)
+      showError(message, err.statusCode || err.response?.status)
       console.error(err)
     } finally {
       setLoading(false)
@@ -88,11 +98,14 @@ function Payments() {
 
     try {
       setLoading(true)
-      await paymentAPI.delete(id)
+      const response = await paymentAPI.delete(id)
       await fetchPayments()
       setError(null)
+      showSuccess('Payment deleted successfully', response.status)
     } catch (err) {
-      setError('Failed to delete payment')
+      const message = err.response?.data?.message || 'Failed to delete payment'
+      setError(message)
+      showError(message, err.statusCode || err.response?.status)
       console.error(err)
     } finally {
       setLoading(false)

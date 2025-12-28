@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import './App.css'
+import { StatusProvider, useStatus } from './context/StatusContext'
+import StatusBar from './components/StatusBar'
 import Dashboard from './components/Dashboard'
 import Customers from './components/Customers'
 import Loans from './components/Loans'
@@ -7,8 +9,9 @@ import LoanTypes from './components/LoanTypes'
 import Guarantors from './components/Guarantors'
 import Payments from './components/Payments'
 
-function App() {
+function AppContent() {
   const [activeTab, setActiveTab] = useState('dashboard')
+  const { status, clearStatus } = useStatus()
 
   const tabs = [
     { id: 'dashboard', label: 'Dashboard' },
@@ -62,7 +65,17 @@ function App() {
       <main className="app-main">
         {renderContent()}
       </main>
+
+      <StatusBar status={status} clearStatus={clearStatus} />
     </div>
+  )
+}
+
+function App() {
+  return (
+    <StatusProvider>
+      <AppContent />
+    </StatusProvider>
   )
 }
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { loanAPI, customerAPI, loanTypeAPI } from '../services/api'
+import { useStatus } from '../context/StatusContext'
 import './TableComponent.css'
 
 function Loans() {
@@ -8,6 +9,7 @@ function Loans() {
   const [loanTypes, setLoanTypes] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const { showError, showSuccess, showInfo } = useStatus()
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [formData, setFormData] = useState({
@@ -32,8 +34,11 @@ function Loans() {
       const response = await loanAPI.getAll()
       setLoans(response.data)
       setError(null)
+      showSuccess(`Successfully loaded ${response.data.length} loans`, response.status)
     } catch (err) {
-      setError('Failed to fetch loans. Make sure the backend is running.')
+      const message = 'Failed to fetch loans. Make sure the backend is running.'
+      setError(message)
+      showError(message, err.statusCode || err.response?.status)
       console.error(err)
     } finally {
       setLoading(false)
@@ -71,17 +76,22 @@ function Loans() {
         loanType: { loanTypeId: parseInt(formData.loanType.loanTypeId) },
       }
 
+      let response
       if (editingId) {
-        await loanAPI.update(editingId, data)
+        response = await loanAPI.update(editingId, data)
+        showSuccess('Loan updated successfully', response.status)
       } else {
-        await loanAPI.create(data)
+        response = await loanAPI.create(data)
+        showSuccess('Loan created successfully', response.status)
       }
 
       await fetchLoans()
       resetForm()
       setError(null)
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to save loan')
+      const message = err.response?.data?.message || 'Failed to save loan'
+      setError(message)
+      showError(message, err.statusCode || err.response?.status)
       console.error(err)
     } finally {
       setLoading(false)
@@ -106,11 +116,14 @@ function Loans() {
 
     try {
       setLoading(true)
-      await loanAPI.delete(id)
+      const response = await loanAPI.delete(id)
       await fetchLoans()
       setError(null)
+      showSuccess('Loan deleted successfully', response.status)
     } catch (err) {
-      setError('Failed to delete loan')
+      const message = err.response?.data?.message || 'Failed to delete loan'
+      setError(message)
+      showError(message, err.statusCode || err.response?.status)
       console.error(err)
     } finally {
       setLoading(false)
@@ -140,9 +153,12 @@ function Loans() {
       const response = await loanAPI.getByStatus(statusFilter)
       setLoans(response.data)
       setError(null)
+      showInfo(`Found ${response.data.length} loans with status: ${statusFilter}`, response.status)
     } catch (err) {
-      setError('No loans found with this status')
+      const message = 'No loans found with this status'
+      setError(message)
       setLoans([])
+      showError(message, err.statusCode || err.response?.status)
     } finally {
       setLoading(false)
     }

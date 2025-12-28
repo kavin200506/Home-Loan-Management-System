@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { customerAPI, loanAPI, loanTypeAPI, guarantorAPI, paymentAPI } from '../services/api'
+import { useStatus } from '../context/StatusContext'
 import './Dashboard.css'
 
 function Dashboard() {
@@ -14,6 +15,7 @@ function Dashboard() {
   })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const { showError, showSuccess } = useStatus()
 
   useEffect(() => {
     fetchStats()
@@ -47,8 +49,11 @@ function Dashboard() {
         totalPayments,
       })
       setError(null)
+      showSuccess('Dashboard statistics loaded successfully', 200)
     } catch (err) {
-      setError('Failed to fetch statistics. Make sure the backend is running on http://localhost:8080')
+      const message = 'Failed to fetch statistics. Make sure the backend is running on http://localhost:8080'
+      setError(message)
+      showError(message, err.statusCode || err.response?.status || 'NETWORK_ERROR')
       console.error('Error fetching stats:', err)
     } finally {
       setLoading(false)

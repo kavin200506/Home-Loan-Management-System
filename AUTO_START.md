@@ -68,3 +68,4 @@ Or manually:
 - Check browser console (F12) for errors
 - Verify MySQL is running
 
+

@@ -123,3 +123,4 @@ trap "echo ''; echo '🛑 Stopping services...'; kill $BACKEND_PID $FRONTEND_PID
 # Keep script running
 wait
 
+

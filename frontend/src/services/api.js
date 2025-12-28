@@ -9,6 +9,37 @@ const api = axios.create({
   },
 })
 
+// Request interceptor
+api.interceptors.request.use(
+  (config) => {
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
+
+// Response interceptor to capture status codes
+api.interceptors.response.use(
+  (response) => {
+    return response
+  },
+  (error) => {
+    // Store status code in error object for easy access
+    if (error.response) {
+      error.statusCode = error.response.status
+      error.statusText = error.response.statusText
+    } else if (error.request) {
+      error.statusCode = 'NETWORK_ERROR'
+      error.statusText = 'Network Error'
+    } else {
+      error.statusCode = 'UNKNOWN_ERROR'
+      error.statusText = 'Unknown Error'
+    }
+    return Promise.reject(error)
+  }
+)
+
 // Customer APIs
 export const customerAPI = {
   getAll: () => api.get('/customers'),
@@ -59,4 +90,5 @@ export const paymentAPI = {
 }
 
 export default api
+
 

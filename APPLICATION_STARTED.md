@@ -147,3 +147,4 @@ The application is running. Open **http://localhost:3000** in your browser to st
 **Status:** ✅ Both services started
 **Ready to use:** http://localhost:3000
 
+

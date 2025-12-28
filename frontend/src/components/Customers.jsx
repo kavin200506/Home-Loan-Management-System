@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { customerAPI } from '../services/api'
+import { useStatus } from '../context/StatusContext'
 import './TableComponent.css'
 
 function Customers() {
   const [customers, setCustomers] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const { showError, showSuccess, showInfo } = useStatus()
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [formData, setFormData] = useState({
@@ -28,8 +30,11 @@ function Customers() {
       const response = await customerAPI.getAll()
       setCustomers(response.data)
       setError(null)
+      showSuccess(`Successfully loaded ${response.data.length} customers`, response.status)
     } catch (err) {
-      setError('Failed to fetch customers. Make sure the backend is running.')
+      const message = err.response?.data?.message || 'Failed to fetch customers. Make sure the backend is running.'
+      setError(message)
+      showError(message, err.statusCode || err.response?.status)
       console.error(err)
     } finally {
       setLoading(false)
@@ -45,17 +50,22 @@ function Customers() {
         creditScore: formData.creditScore ? parseFloat(formData.creditScore) : null,
       }
 
+      let response
       if (editingId) {
-        await customerAPI.update(editingId, data)
+        response = await customerAPI.update(editingId, data)
+        showSuccess('Customer updated successfully', response.status)
       } else {
-        await customerAPI.create(data)
+        response = await customerAPI.create(data)
+        showSuccess('Customer created successfully', response.status)
       }
 
       await fetchCustomers()
       resetForm()
       setError(null)
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to save customer')
+      const message = err.response?.data?.message || 'Failed to save customer'
+      setError(message)
+      showError(message, err.statusCode || err.response?.status)
       console.error(err)
     } finally {
       setLoading(false)
@@ -79,11 +89,14 @@ function Customers() {
 
     try {
       setLoading(true)
-      await customerAPI.delete(id)
+      const response = await customerAPI.delete(id)
       await fetchCustomers()
       setError(null)
+      showSuccess('Customer deleted successfully', response.status)
     } catch (err) {
-      setError('Failed to delete customer')
+      const message = err.response?.data?.message || 'Failed to delete customer'
+      setError(message)
+      showError(message, err.statusCode || err.response?.status)
       console.error(err)
     } finally {
       setLoading(false)
@@ -110,9 +123,12 @@ function Customers() {
       const data = typeof response.data === 'string' ? JSON.parse(response.data) : response.data
       setCustomers([data])
       setError(null)
+      showInfo(`Found customer: ${data.customerName}`, response.status)
     } catch (err) {
-      setError('Customer not found with this email')
+      const message = 'Customer not found with this email'
+      setError(message)
       setCustomers([])
+      showError(message, err.statusCode || err.response?.status)
     } finally {
       setLoading(false)
     }
@@ -125,9 +141,12 @@ function Customers() {
       const response = await customerAPI.getByCreditScore(searchCredit)
       setCustomers(response.data)
       setError(null)
+      showInfo(`Found ${response.data.length} customers with credit score >= ${searchCredit}`, response.status)
     } catch (err) {
-      setError('No customers found with this credit score')
+      const message = 'No customers found with this credit score'
+      setError(message)
       setCustomers([])
+      showError(message, err.statusCode || err.response?.status)
     } finally {
       setLoading(false)
     }

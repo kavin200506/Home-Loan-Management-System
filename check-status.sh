@@ -41,3 +41,4 @@ fi
 echo ""
 echo "🌐 Open in browser: http://localhost:3000"
 
+

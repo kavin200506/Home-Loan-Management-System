@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { loanTypeAPI } from '../services/api'
+import { useStatus } from '../context/StatusContext'
 import './TableComponent.css'
 
 function LoanTypes() {
   const [loanTypes, setLoanTypes] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const { showError, showSuccess } = useStatus()
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [formData, setFormData] = useState({
@@ -24,8 +26,11 @@ function LoanTypes() {
       const response = await loanTypeAPI.getAll()
       setLoanTypes(response.data)
       setError(null)
+      showSuccess(`Successfully loaded ${response.data.length} loan types`, response.status)
     } catch (err) {
-      setError('Failed to fetch loan types. Make sure the backend is running.')
+      const message = 'Failed to fetch loan types. Make sure the backend is running.'
+      setError(message)
+      showError(message, err.statusCode || err.response?.status)
       console.error(err)
     } finally {
       setLoading(false)
@@ -41,17 +46,22 @@ function LoanTypes() {
         interestRate: parseFloat(formData.interestRate) || null,
       }
 
+      let response
       if (editingId) {
-        await loanTypeAPI.update(editingId, data)
+        response = await loanTypeAPI.update(editingId, data)
+        showSuccess('Loan type updated successfully', response.status)
       } else {
-        await loanTypeAPI.create(data)
+        response = await loanTypeAPI.create(data)
+        showSuccess('Loan type created successfully', response.status)
       }
 
       await fetchLoanTypes()
       resetForm()
       setError(null)
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to save loan type')
+      const message = err.response?.data?.message || 'Failed to save loan type'
+      setError(message)
+      showError(message, err.statusCode || err.response?.status)
       console.error(err)
     } finally {
       setLoading(false)
@@ -73,11 +83,14 @@ function LoanTypes() {
 
     try {
       setLoading(true)
-      await loanTypeAPI.delete(id)
+      const response = await loanTypeAPI.delete(id)
       await fetchLoanTypes()
       setError(null)
+      showSuccess('Loan type deleted successfully', response.status)
     } catch (err) {
-      setError('Failed to delete loan type')
+      const message = err.response?.data?.message || 'Failed to delete loan type'
+      setError(message)
+      showError(message, err.statusCode || err.response?.status)
       console.error(err)
     } finally {
       setLoading(false)
