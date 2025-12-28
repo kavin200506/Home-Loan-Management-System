@@ -9,6 +9,5 @@ import java.util.List;
 @Repository
 public interface LoanRepo extends JpaRepository<Loan, Long> {
  
- // Custom query method - Spring Data JPA creates implementation automatically
  List<Loan> findByStatus(String status);
 }

@@ -35,7 +35,6 @@ public class LoanService {
  loanRepo.deleteById(id);
  }
  
- // Find loans by status (Day 11)
  public List<Loan> getLoansByStatus(String status) {
  return loanRepo.findByStatus(status);
  }

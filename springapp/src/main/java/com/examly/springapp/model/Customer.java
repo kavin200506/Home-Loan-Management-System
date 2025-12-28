@@ -19,12 +19,11 @@ public class Customer {
     
     private String phoneNumber;
     private String address;
-    private Double creditScore;
-    
-    public Customer() {}
-    
-    // Getters and Setters remain the same
-    public Long getCustomerId() {
+ private Double creditScore;
+ 
+ public Customer() {}
+ 
+ public Long getCustomerId() {
         return customerId;
     }
     

@@ -10,9 +10,7 @@ import java.util.Optional;
 @Repository
 public interface CustomerRepo extends JpaRepository<Customer, Long> {
  
- // Find customer by email
  Optional<Customer> findByEmail(String email);
  
- // Find customers with credit score >= given value
  List<Customer> findByCreditScoreGreaterThanEqual(Double creditScore);
 }

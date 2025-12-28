@@ -60,13 +60,13 @@
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.2);
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
 }
 
 .status-time {
   font-size: 0.75rem;
   opacity: 0.8;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
 }
 
 .status-close {
@@ -89,7 +89,6 @@
   opacity: 1;
 }
 
-/* Error Status */
 .status-error {
   background: #dc2626;
   color: white;
@@ -99,7 +98,6 @@
   background: rgba(255, 255, 255, 0.2);
 }
 
-/* Success Status */
 .status-success {
   background: #059669;
   color: white;
@@ -109,7 +107,6 @@
   background: rgba(255, 255, 255, 0.2);
 }
 
-/* Info Status */
 .status-info {
   background: #1e3a5f;
   color: white;
@@ -119,7 +116,6 @@
   background: rgba(255, 255, 255, 0.2);
 }
 
-/* Default Status */
 .status-default {
   background: #64748b;
   color: white;
@@ -145,4 +141,3 @@
     font-size: 0.7rem;
   }
 }
-

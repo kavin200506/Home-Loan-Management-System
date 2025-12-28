@@ -1,94 +1,84 @@
-import axios from 'axios'
+import axios from "axios";
 
-const API_BASE_URL = 'http://localhost:8080/api'
+const API_BASE_URL = "http://localhost:8080/api";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
-})
+});
 
-// Request interceptor
 api.interceptors.request.use(
   (config) => {
-    return config
+    return config;
   },
   (error) => {
-    return Promise.reject(error)
+    return Promise.reject(error);
   }
-)
+);
 
-// Response interceptor to capture status codes
 api.interceptors.response.use(
   (response) => {
-    return response
+    return response;
   },
   (error) => {
-    // Store status code in error object for easy access
     if (error.response) {
-      error.statusCode = error.response.status
-      error.statusText = error.response.statusText
+      error.statusCode = error.response.status;
+      error.statusText = error.response.statusText;
     } else if (error.request) {
-      error.statusCode = 'NETWORK_ERROR'
-      error.statusText = 'Network Error'
+      error.statusCode = "NETWORK_ERROR";
+      error.statusText = "Network Error";
     } else {
-      error.statusCode = 'UNKNOWN_ERROR'
-      error.statusText = 'Unknown Error'
+      error.statusCode = "UNKNOWN_ERROR";
+      error.statusText = "Unknown Error";
     }
-    return Promise.reject(error)
+    return Promise.reject(error);
   }
-)
+);
 
-// Customer APIs
 export const customerAPI = {
-  getAll: () => api.get('/customers'),
+  getAll: () => api.get("/customers"),
   getById: (id) => api.get(`/customers/${id}`),
-  create: (data) => api.post('/customers', data),
+  create: (data) => api.post("/customers", data),
   update: (id, data) => api.put(`/customers/${id}`, data),
   delete: (id) => api.delete(`/customers/${id}`),
   getByEmail: (email) => api.get(`/customers/email/${email}`),
   getByCreditScore: (score) => api.get(`/customers/creditScore/${score}`),
   getPaginated: (page, size) => api.get(`/customers/page/${page}/${size}`),
-}
+};
 
-// Loan APIs
 export const loanAPI = {
-  getAll: () => api.get('/loans'),
+  getAll: () => api.get("/loans"),
   getById: (id) => api.get(`/loans/${id}`),
-  create: (data) => api.post('/loans', data),
+  create: (data) => api.post("/loans", data),
   update: (id, data) => api.put(`/loans/${id}`, data),
   delete: (id) => api.delete(`/loans/${id}`),
   getByStatus: (status) => api.get(`/loans/status/${status}`),
-}
+};
 
-// Loan Type APIs
 export const loanTypeAPI = {
-  getAll: () => api.get('/loantypes'),
+  getAll: () => api.get("/loantypes"),
   getById: (id) => api.get(`/loantypes/${id}`),
-  create: (data) => api.post('/loantypes', data),
+  create: (data) => api.post("/loantypes", data),
   update: (id, data) => api.put(`/loantypes/${id}`, data),
   delete: (id) => api.delete(`/loantypes/${id}`),
-}
+};
 
-// Guarantor APIs
 export const guarantorAPI = {
-  getAll: () => api.get('/guarantors'),
+  getAll: () => api.get("/guarantors"),
   getById: (id) => api.get(`/guarantors/${id}`),
-  create: (data) => api.post('/guarantors', data),
+  create: (data) => api.post("/guarantors", data),
   update: (id, data) => api.put(`/guarantors/${id}`, data),
   delete: (id) => api.delete(`/guarantors/${id}`),
-}
+};
 
-// Payment APIs
 export const paymentAPI = {
-  getAll: () => api.get('/payments'),
+  getAll: () => api.get("/payments"),
   getById: (id) => api.get(`/payments/${id}`),
-  create: (data) => api.post('/payments', data),
+  create: (data) => api.post("/payments", data),
   update: (id, data) => api.put(`/payments/${id}`, data),
   delete: (id) => api.delete(`/payments/${id}`),
-}
+};
 
-export default api
-
-
+export default api;

@@ -1,4 +1,3 @@
-// SpringappApplicationTests.java
 package com.examly.springapp;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;

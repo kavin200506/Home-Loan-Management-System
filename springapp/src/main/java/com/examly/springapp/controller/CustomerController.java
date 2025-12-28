@@ -58,14 +58,12 @@ public class CustomerController {
  Page<Customer> customers = customerService.getCustomersWithPagination(page, size);
  return new ResponseEntity<>(customers, HttpStatus.OK);
  }
- 
- // Get customer by email (Test 54 - Day 12)
+
  @GetMapping("/email/{email}")
  public ResponseEntity<String> getCustomerByEmail(@PathVariable String email) {
  Optional<Customer> customer = customerService.getCustomerByEmail(email);
  
  if (customer.isPresent()) {
- // Return the customer as JSON in ResponseEntity body
  return ResponseEntity.ok()
  .body("{\"customerId\":" + customer.get().getCustomerId() + 
  ",\"customerName\":\"" + customer.get().getCustomerName() + 
@@ -78,7 +76,6 @@ public class CustomerController {
  return new ResponseEntity<>("Customer not found with email: " + email, HttpStatus.NOT_FOUND);
  }
  
- // Get customers by credit score >= value (Test 55 - Day 12)
  @GetMapping("/creditScore/{creditScore}")
  public ResponseEntity<?> getCustomersByCreditScore(@PathVariable Double creditScore) {
  List<Customer> customers = customerService.getCustomersByCreditScore(creditScore);

@@ -43,12 +43,10 @@ public class CustomerService {
  return customerRepo.findAll(pageable);
  }
  
- // Find customer by email (Day 12)
  public Optional<Customer> getCustomerByEmail(String email) {
  return customerRepo.findByEmail(email);
  }
  
- // Find customers by credit score >= value (Day 12)
  public List<Customer> getCustomersByCreditScore(Double creditScore) {
  return customerRepo.findByCreditScoreGreaterThanEqual(creditScore);
  }

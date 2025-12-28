@@ -48,7 +48,6 @@ public class LoanController {
  return new ResponseEntity<>("Loan deleted successfully", HttpStatus.OK);
  }
  
- // Get loans by status (Test 53 - Day 11)
  @GetMapping("/status/{status}")
  public ResponseEntity<?> getLoansByStatus(@PathVariable String status) {
  List<Loan> loans = loanService.getLoansByStatus(status);
